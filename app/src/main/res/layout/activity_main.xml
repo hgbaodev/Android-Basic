@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/black">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listMusic"
+        android:layout_above="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:id="@+id/main"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cd_image"
+            android:layout_marginTop="12dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:src="@drawable/mycd"
+            app:civ_border_color="#F6F2F2"
+            app:civ_border_width="2dp" />
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/musicName"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chúng ta của hiện tại"
+                android:textColor="@color/white"
+                android:textSize="14dp"></TextView>
+            <TextView
+                android:id="@+id/singerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hoàng Gia Bảo"
+                android:textColor="@color/white"
+                android:textSize="14dp"></TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_weight="1">
+
+
+            <ImageButton
+                android:id="@+id/btnPre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:src="@drawable/pre"></ImageButton>
+            <ImageButton
+                android:id="@+id/btnPlayMusicCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/black"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/newpause"></ImageButton>
+            <ImageButton
+                android:id="@+id/btnNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:src="@drawable/next"></ImageButton>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>
