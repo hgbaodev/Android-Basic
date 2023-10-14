@@ -33,7 +33,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    private List<Audio> listAudio;
 
     private Audio audio;
 
@@ -57,11 +56,10 @@ public class PlayerActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Now Playing");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        listAudio = getAllAudioFromDevice(getApplicationContext());
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             position = bundle.getInt("position", 0);
-            audio = listAudio.get(position);
+            audio = MusicAdapter.listAudio.get(position);
         }
         initViews();
         loadMusic();
@@ -85,7 +83,7 @@ public class PlayerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int temp = position;
                 position++;
-                if(position>=listAudio.size()){
+                if(position>=MusicAdapter.listAudio.size()){
                     position = 0;
                 }
                 loadMusic();
@@ -99,7 +97,7 @@ public class PlayerActivity extends AppCompatActivity {
                 int temp = position;
                 position--;
                 if(position < 0){
-                    position = listAudio.size() - 1;
+                    position = MusicAdapter.listAudio.size() - 1;
                 }
                 loadMusic();
                 btnPlayMusicCenter.setImageResource(R.drawable.newpause);
@@ -112,9 +110,9 @@ public class PlayerActivity extends AppCompatActivity {
         if(MusicAdapter.mediaPlayer.isPlaying()){
             MusicAdapter.mediaPlayer.stop();
         }
-        MusicAdapter.mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(listAudio.get(position).getPath())));
-        musicName.setText(listAudio.get(position).getName().split("-")[0]);
-        singerName.setText(listAudio.get(position).getSinger());
+        MusicAdapter.mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(MusicAdapter.listAudio.get(position).getPath())));
+        musicName.setText(MusicAdapter.listAudio.get(position).getName().split("-")[0]);
+        singerName.setText(MusicAdapter.listAudio.get(position).getSinger());
         MusicAdapter.mediaPlayer.start();
 
         seekmusic.setMax(MusicAdapter.mediaPlayer.getDuration());
@@ -145,11 +143,9 @@ public class PlayerActivity extends AppCompatActivity {
                     MusicAdapter.mediaPlayer.seekTo(i);
                 }
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
@@ -187,7 +183,6 @@ public class PlayerActivity extends AppCompatActivity {
         seekmusic = (SeekBar) findViewById(R.id.seekbar_id);
         circleImageView = findViewById(R.id.cd_image);
     }
-
 
     @Override
     public void onBackPressed() {

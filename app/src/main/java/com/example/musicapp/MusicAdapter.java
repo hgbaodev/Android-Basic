@@ -3,7 +3,6 @@ package com.example.musicapp;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
@@ -22,7 +21,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
-    private List<Audio> audioList;
+    static List<Audio> listAudio;
     private Context mContext;
     static MediaPlayer mediaPlayer;
     RecyclerView recyclerView;
@@ -32,8 +31,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     private ImageButton playAndPauseBtn, preBtn, nextBtn;
     private CircleImageView circleImageView;
 
+
+
     public MusicAdapter(List<Audio> list, Context context, RecyclerView recyclerView, TextView musicName, TextView singerName, ImageButton playAndPauseBtn, ImageButton  preBtn, ImageButton  nextBtn, CircleImageView circleImageView) {
-        this.audioList = list;
+        this.listAudio = list;
         this.mContext = context;
         this.recyclerView = recyclerView;
         MusicAdapter.mediaPlayer = new MediaPlayer();
@@ -58,8 +59,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    musicName.setText(audioList.get(getAdapterPosition()).getName());
-                    singerName.setText(audioList.get(getAdapterPosition()).getSinger());
+                    musicName.setText(listAudio.get(getAdapterPosition()).getName());
+                    singerName.setText(listAudio.get(getAdapterPosition()).getSinger());
                     playAndPauseBtn.setImageResource(R.drawable.newpause);
                     startRotateAnimation();
                     playAudioHandler();
@@ -75,7 +76,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     if(MusicAdapter.mediaPlayer.isPlaying()){
                         MusicAdapter.mediaPlayer.pause();
                         playAndPauseBtn.setImageResource(R.drawable.newplay);
-                        // reset icon btn play in item
                         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
                         if (viewHolder instanceof ViewHolder) {
                             ViewHolder yourViewHolder = (ViewHolder) viewHolder;
@@ -85,7 +85,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     }else{
                         MusicAdapter.mediaPlayer.start();
                         playAndPauseBtn.setImageResource(R.drawable.newpause);
-//                      reset icon btn play in item
                         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
                         if (viewHolder instanceof ViewHolder) {
                             ViewHolder yourViewHolder = (ViewHolder) viewHolder;
@@ -101,7 +100,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 public void onClick(View view) {
                     int temp = positionPlaying;
                     positionPlaying++;
-                    if(positionPlaying>=audioList.size()){
+                    if(positionPlaying>= listAudio.size()){
                         positionPlaying = 0;
                     }
                     nextAndPreAudioHandler(temp, positionPlaying);
@@ -115,7 +114,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     int temp = positionPlaying;
                     positionPlaying--;
                     if(positionPlaying < 0){
-                        positionPlaying = audioList.size() - 1;
+                        positionPlaying = listAudio.size() - 1;
                     }
                     nextAndPreAudioHandler(temp, positionPlaying);
                     playAndPauseBtn.setImageResource(R.drawable.newpause);
@@ -150,19 +149,19 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             }
             MusicAdapter.mediaPlayer.reset();
             try {
-                MusicAdapter.mediaPlayer.setDataSource(audioList.get(positionPlaying).getPath());
+                MusicAdapter.mediaPlayer.setDataSource(listAudio.get(positionPlaying).getPath());
                 MusicAdapter.mediaPlayer.prepare();
                 MusicAdapter.mediaPlayer.start();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            musicName.setText(audioList.get(positionPlaying).getName());
-            singerName.setText(audioList.get(positionPlaying).getSinger());
+            musicName.setText(listAudio.get(positionPlaying).getName());
+            singerName.setText(listAudio.get(positionPlaying).getSinger());
         }
         public void playAudioHandler(){
             int position = getAdapterPosition();
-            musicName.setText(audioList.get(getAdapterPosition()).getName());
-            singerName.setText(audioList.get(getAdapterPosition()).getSinger());
+            musicName.setText(listAudio.get(getAdapterPosition()).getName());
+            singerName.setText(listAudio.get(getAdapterPosition()).getSinger());
             if(position != positionPlaying) {
                 RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
                 if (viewHolder instanceof ViewHolder) {
@@ -173,7 +172,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 positionPlaying = position;
                 MusicAdapter.mediaPlayer.stop();
                 MusicAdapter.mediaPlayer.reset();
-                Audio audio = audioList.get(position);
+                Audio audio = listAudio.get(position);
                 try {
                     btnPlay.setImageResource(R.drawable.pause);
                     playAndPauseBtn.setImageResource(R.drawable.newpause);
@@ -186,7 +185,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     e.printStackTrace();
                 }
             } else {
-                Audio audio = audioList.get(position);
+                Audio audio = listAudio.get(position);
                 try {
                     if (MusicAdapter.mediaPlayer.isPlaying()) {
                         btnPlay.setImageResource(R.drawable.play);
@@ -224,6 +223,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 MusicAdapter.mediaPlayer.reset();
             }
         }
+
         public void initView() {
             lblName = itemView.findViewById(R.id.lblName);
             lblPath = itemView.findViewById(R.id.lblPath);
@@ -243,14 +243,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Audio audio = audioList.get(position);
+        Audio audio = listAudio.get(position);
         holder.lblName.setText(audio.getName());
         holder.lblPath.setText(audio.getSinger());
     }
 
     @Override
     public int getItemCount() {
-        return audioList.size();
+        return listAudio.size();
     }
 
     public void releaseMediaPlayer() {
@@ -272,14 +272,18 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         circleImageView.clearAnimation();
     }
     public void loadView(){
-        musicName.setText(audioList.get(0).getName());
-        singerName.setText(audioList.get(0).getSinger());
+        musicName.setText(listAudio.get(0).getName());
+        singerName.setText(listAudio.get(0).getSinger());
         playAndPauseBtn.setImageResource(R.drawable.newplay);
         try {
-            MusicAdapter.mediaPlayer.setDataSource(audioList.get(0).getPath());
+            MusicAdapter.mediaPlayer.setDataSource(listAudio.get(0).getPath());
             MusicAdapter.mediaPlayer.prepare();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void stopAudioToPlayer(int position){
+
     }
 }
