@@ -1,11 +1,15 @@
 package com.example.musicapp;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public TextView musicName, singerName;
     public ImageButton playAndPauseBtn, preBtn, nextBtn;
     public CircleImageView circleImageView;
+    public static ActivityResultLauncher<Intent> playerActivityLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +45,23 @@ public class MainActivity extends AppCompatActivity {
         checkPermission();
 
         listAudio = getAllAudioFromDevice(getApplicationContext());
-        adapter = new MusicAdapter(listAudio, getApplicationContext(), listMusic, musicName, singerName, playAndPauseBtn, preBtn, nextBtn, circleImageView);
+        adapter = new MusicAdapter(listAudio, getApplicationContext(), listMusic, musicName, singerName, playAndPauseBtn, preBtn, nextBtn, circleImageView, 0, false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         listMusic.setAdapter(adapter);
         listMusic.setLayoutManager(linearLayoutManager);
+        playerActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Xử lý kết quả từ PlayerActivity ở đây
+                        if (result.getData() != null) {
+                            int returnedValue = result.getData().getIntExtra("position", -1);
+                            Boolean playValue = result.getData().getBooleanExtra("play", false);
+//                            adapter = new MusicAdapter(listAudio, getApplicationContext(), listMusic, musicName, singerName, playAndPauseBtn, preBtn, nextBtn, circleImageView, returnedValue, playValue);
+//                            listMusic.setAdapter(adapter);
+                        }
+                    }
+                });
     }
 
     public void initViews() {

@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -36,7 +38,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private Audio audio;
 
-    private int position;
+    private int position, currentTime;
 
     private TextView musicName, txtstart, txtstop, singerName;
 
@@ -75,7 +77,6 @@ public class PlayerActivity extends AppCompatActivity {
                     btnPlayMusicCenter.setImageResource(R.drawable.newpause);
                     startRotateAnimation();
                 }
-
             }
         });
         btnNext.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +187,10 @@ public class PlayerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("position", position);
+        resultIntent.putExtra("play", MusicAdapter.mediaPlayer.isPlaying());
+        setResult(Activity.RESULT_OK, resultIntent);
         super.onBackPressed();
         finish(); // Kết thúc hoạt động PlayerActivity và quay lại hoạt động gọi trước đó
     }
