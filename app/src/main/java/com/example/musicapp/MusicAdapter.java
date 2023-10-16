@@ -12,10 +12,11 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
@@ -27,18 +28,25 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     static List<Audio> listAudio;
     private Context mContext;
     static MediaPlayer mediaPlayer;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private static int positionPlaying = -1;
     private TextView musicName;
     private TextView singerName;
     private ImageButton playAndPauseBtn, preBtn, nextBtn;
     private CircleImageView circleImageView;
     private boolean initialPlayState;
+    private LinearLayout smallControlLayout;
+
+    public void setPositionPlaying(int pos){
+        this.positionPlaying = pos;
+    }
 
 
+    public RecyclerView getRecyclerView(){
+        return this.recyclerView;
+    }
 
-
-    public MusicAdapter(List<Audio> list, Context context, RecyclerView recyclerView, TextView musicName, TextView singerName, ImageButton playAndPauseBtn, ImageButton preBtn, ImageButton nextBtn, CircleImageView circleImageView, int position, Boolean play) {
+    public MusicAdapter(List<Audio> list, Context context, RecyclerView recyclerView, TextView musicName, TextView singerName, ImageButton playAndPauseBtn, ImageButton preBtn, ImageButton nextBtn, CircleImageView circleImageView, LinearLayout smallControlLayout, int position, Boolean play) {
         this.listAudio = list;
         this.mContext = context;
         this.recyclerView = recyclerView;
@@ -48,7 +56,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         this.preBtn = preBtn;
         this.nextBtn = nextBtn;
         this.circleImageView = circleImageView;
-
+        this.smallControlLayout = smallControlLayout;
         MusicAdapter.mediaPlayer = new MediaPlayer();
 
         initialPlayState = play; // Lưu trạng thái ban đầu
@@ -84,6 +92,16 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     playAudioHandler();
                     Intent intent = new Intent(mContext, PlayerActivity.class);
                     intent.putExtra("position", getAdapterPosition());
+                    intent.putExtra("currentTime", MusicAdapter.mediaPlayer.getCurrentPosition());
+                    MainActivity.playerActivityLauncher.launch(intent);
+
+                }
+            });
+            smallControlLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, PlayerActivity.class);
+                    intent.putExtra("position", positionPlaying);
                     intent.putExtra("currentTime", MusicAdapter.mediaPlayer.getCurrentPosition());
                     MainActivity.playerActivityLauncher.launch(intent);
                 }
@@ -309,4 +327,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             throw new RuntimeException(e);
         }
     }
+
+
 }

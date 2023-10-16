@@ -22,6 +22,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.chibde.visualizer.CircleBarVisualizer;
@@ -34,11 +35,12 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlayerActivity extends AppCompatActivity {
-
+    // lưu trữ vị trí khi chuyển sang activity này để xử lý trạng thái lúc quay về
+    private int storePosition = -1;
 
     private Audio audio;
 
-    private int position, currentTime;
+    private int position;
 
     private TextView musicName, txtstart, txtstop, singerName;
 
@@ -59,12 +61,16 @@ public class PlayerActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         Bundle bundle = getIntent().getExtras();
+        int currentTime = 0;
         if (bundle != null) {
             position = bundle.getInt("position", 0);
+            storePosition = position;
             audio = MusicAdapter.listAudio.get(position);
+            currentTime = bundle.getInt("currentTime", 0);
         }
         initViews();
         loadMusic();
+        MusicAdapter.mediaPlayer.seekTo(currentTime);
         btnPlayMusicCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -189,7 +195,10 @@ public class PlayerActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra("position", position);
+        resultIntent.putExtra("musicname", musicName.getText());
         resultIntent.putExtra("play", MusicAdapter.mediaPlayer.isPlaying());
+        resultIntent.putExtra("storePosition", storePosition);
+
         setResult(Activity.RESULT_OK, resultIntent);
         super.onBackPressed();
         finish(); // Kết thúc hoạt động PlayerActivity và quay lại hoạt động gọi trước đó
