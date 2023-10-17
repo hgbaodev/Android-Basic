@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -24,11 +28,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     static List<Audio> listAudio;
     private Context mContext;
     static MediaPlayer mediaPlayer;
-    private RecyclerView recyclerView;
-    private static int positionPlaying = 0;
-    private TextView musicName, singerName;
+    static RecyclerView recyclerView;
+    static int positionPlaying = 0;
+    static TextView musicName, singerName;
     private ImageButton playAndPauseBtn, preBtn, nextBtn;
-    private CircleImageView circleImageView;
+    static CircleImageView circleImageView;
     private boolean initialPlayState;
     private LinearLayout smallControlLayout;
 
@@ -64,12 +68,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             renderPauseBottomBar();
         }
 
-        MusicAdapter.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                // Xử lý khi bài hát kết thúc
-            }
-        });
+
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -85,9 +85,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     playAudioHandler();
-
                     Intent intent = new Intent(mContext, PlayerActivity.class);
                     intent.putExtra("position", getAdapterPosition());
                     intent.putExtra("currentTime", MusicAdapter.mediaPlayer.getCurrentPosition());
@@ -158,6 +156,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             btnStop.setOnClickListener(view -> {
                 stopAudioHandler();
             });
+
         }
 
 
