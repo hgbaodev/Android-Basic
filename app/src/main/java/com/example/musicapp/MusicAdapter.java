@@ -115,7 +115,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                     } else {
                         MusicAdapter.mediaPlayer.start();
                         yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
-
                         renderStartBottomBar();
                     }
 
@@ -142,9 +141,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                         positionPlaying = listAudio.size() - 1;
                     }
                     nextAndPreAudioHandler(temp, positionPlaying);
-
                     renderStartBottomBar();
-
                 }
             });
 

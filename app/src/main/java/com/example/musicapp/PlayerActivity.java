@@ -251,7 +251,7 @@ public class PlayerActivity extends AppCompatActivity {
 
         setResult(Activity.RESULT_OK, resultIntent);
         super.onBackPressed();
-        finish(); // Kết thúc hoạt động PlayerActivity và quay lại hoạt động gọi trước đó
+        finish();
     }
 
     @Override
