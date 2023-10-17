@@ -80,7 +80,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginBottom="20dp"></SeekBar>
+                android:layout_marginBottom="25dp"></SeekBar>
 
             <TextView
                 android:id="@+id/txtstart"
@@ -116,6 +116,7 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
             ></ImageButton>
         <ImageButton
             android:id="@+id/btnPre"
@@ -127,6 +128,7 @@
             android:layout_toStartOf="@+id/btnPlayMusicCenter"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="40dp"
+            android:layout_marginBottom="20dp"
             ></ImageButton>
         <ImageButton
             android:id="@+id/btnNext"
@@ -138,6 +140,33 @@
             android:layout_toEndOf="@+id/btnPlayMusicCenter"
             android:layout_marginTop="10dp"
             android:layout_marginStart="40dp"
+            android:layout_marginBottom="20dp"
+            ></ImageButton>
+
+        <ImageButton
+            android:id="@+id/btnBasePre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="20dp"
+            android:layout_toStartOf="@+id/btnPre"
+            android:background="@color/black"
+            android:src="@drawable/baseline_prev"></ImageButton>
+
+        <ImageButton
+            android:id="@+id/btnBaseNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="20dp"
+            android:layout_toEndOf="@+id/btnNext"
+            android:background="@color/black"
+            android:src="@drawable/baseline_next"
             ></ImageButton>
     </RelativeLayout>
 </LinearLayout>
