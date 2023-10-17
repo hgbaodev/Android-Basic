@@ -222,8 +222,11 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent resultIntent = new Intent();
+        Audio audio = MusicAdapter.listAudio.get(position);
         resultIntent.putExtra("position", position);
-        resultIntent.putExtra("musicname", musicName.getText());
+        resultIntent.putExtra("musicname", audio.getName());
+        resultIntent.putExtra("singer", audio.getSinger());
+        resultIntent.putExtra("imgPath", audio.getPath());
         resultIntent.putExtra("play", MusicAdapter.mediaPlayer.isPlaying());
         resultIntent.putExtra("storePosition", storePosition);
 

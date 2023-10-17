@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,7 +79,13 @@ public class MainActivity extends AppCompatActivity {
             adapter.setPositionPlaying(returnedValue);
             boolean playValue = data.getBooleanExtra("play", false);
             String returnedMusicName = data.getStringExtra("musicname");
+            String returnSiger = data.getStringExtra("singer");
+            String imgPath = data.getStringExtra("imgPath");
             musicName.setText(returnedMusicName);
+            singerName.setText(returnSiger);
+            Bitmap thumbnail = MusicAdapter.getThumbnail(imgPath);
+            if(thumbnail != null) circleImageView.setImageBitmap(thumbnail);
+            else circleImageView.setImageResource(R.drawable.mycd);
             handlePreviousItem(storePosition);
             handleCurrentItem(returnedValue, playValue);
         }

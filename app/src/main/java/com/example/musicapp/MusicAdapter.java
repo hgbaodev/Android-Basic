@@ -63,6 +63,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         } else {
             renderPauseBottomBar();
         }
+
+        MusicAdapter.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                // Xử lý khi bài hát kết thúc
+            }
+        });
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -125,7 +132,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                         positionPlaying = 0;
                     }
                     nextAndPreAudioHandler(temp, positionPlaying);
-
                     renderStartBottomBar();
                 }
             });
