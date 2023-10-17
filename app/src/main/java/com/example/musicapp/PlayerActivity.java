@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.chibde.visualizer.CircleBarVisualizer;
 import com.chibde.visualizer.LineVisualizer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +85,11 @@ public class PlayerActivity extends AppCompatActivity {
                 if(MusicAdapter.mediaPlayer.isPlaying()){
                     MusicAdapter.mediaPlayer.pause();
                     btnPlayMusicCenter.setImageResource(R.drawable.newplay);
-                    stopRotateAnimation();
+                    MusicAdapter.stopRotateAnimation(circleImageView);
                 }else{
                     MusicAdapter.mediaPlayer.start();
                     btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-                    startRotateAnimation();
+                    MusicAdapter.startRotateAnimation(circleImageView);
                 }
             }
         });
@@ -101,7 +103,7 @@ public class PlayerActivity extends AppCompatActivity {
                 }
                 loadMusic();
                 btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-                startRotateAnimation();
+                MusicAdapter.startRotateAnimation(circleImageView);
             }
         });
         btnPre.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +116,7 @@ public class PlayerActivity extends AppCompatActivity {
                 }
                 loadMusic();
                 btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-                startRotateAnimation();
+                MusicAdapter.startRotateAnimation(circleImageView);
             }
         });
 
@@ -146,6 +148,14 @@ public class PlayerActivity extends AppCompatActivity {
         MusicAdapter.mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(MusicAdapter.listAudio.get(position).getPath())));
         musicName.setText(MusicAdapter.listAudio.get(position).getName().split("-")[0]);
         singerName.setText(MusicAdapter.listAudio.get(position).getSinger());
+        try {
+            Bitmap thumbnail = MusicAdapter.getThumbnail(MusicAdapter.listAudio.get(position).getPath());
+            if(thumbnail != null) {
+                circleImageView.setImageBitmap(thumbnail);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         MusicAdapter.mediaPlayer.start();
 
         seekmusic.setMax(MusicAdapter.mediaPlayer.getDuration());
@@ -198,7 +208,7 @@ public class PlayerActivity extends AppCompatActivity {
                 handler.postDelayed(this, delay);
             }
         }, delay);
-        startRotateAnimation();
+        MusicAdapter.startRotateAnimation(circleImageView);
 
         CircleBarVisualizer circleBarVisualizer = findViewById(R.id.visualizer);
         circleBarVisualizer.setColor(ContextCompat.getColor(this, R.color.purple_200));
@@ -226,7 +236,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
         loadMusic();
         btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-        startRotateAnimation();
+        MusicAdapter.startRotateAnimation(circleImageView);
     }
 
     @Override
@@ -250,36 +260,6 @@ public class PlayerActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public List<Audio> getAllAudioFromDevice(final Context context) {
-
-        final List<Audio> tempAudioList = new ArrayList<>();
-
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String[] projection = {MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ALBUM, MediaStore.Audio.ArtistColumns.ARTIST};
-        Cursor c = context.getContentResolver().query(uri, projection, null, null, null);
-
-        if (c != null) {
-            while (c.moveToNext()) {
-                Audio audioModel = new Audio();
-                String path = c.getString(0);
-                String album = c.getString(1);
-                String artist = c.getString(2);
-                String name = path.substring(path.lastIndexOf("/") + 1);
-                if (path != null && path.toLowerCase().endsWith(".mp3")) {
-                    audioModel.setName(name);
-                    audioModel.setAlbum(album);
-                    audioModel.setSinger(artist);
-                    audioModel.setPath(path);
-                    Log.i("MUSIC", audioModel.toString());
-                    tempAudioList.add(audioModel);
-                }
-            }
-            c.close();
-        }
-
-        return tempAudioList;
-    }
-
     public String createTime(int duration) {
         String time = "";
         int min = duration / 1000 / 60;
@@ -295,17 +275,4 @@ public class PlayerActivity extends AppCompatActivity {
         return time;
     }
 
-    public void startRotateAnimation(){
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f, // Xoay xung quanh trục X ở giữa view
-                Animation.RELATIVE_TO_SELF, 0.5f); // Xoay xung quanh trục Y ở giữa view
-        rotateAnimation.setDuration(1000); // Thời gian một vòng xoay (milliseconds)
-        rotateAnimation.setRepeatCount(Animation.INFINITE); // Lặp vô hạn
-        rotateAnimation.setInterpolator(new LinearInterpolator()); // Chuyển động đều
-        circleImageView.startAnimation(rotateAnimation);
-    }
-
-    public void stopRotateAnimation(){
-        circleImageView.clearAnimation();
-    }
 }

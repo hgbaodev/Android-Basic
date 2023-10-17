@@ -8,8 +8,9 @@
         android:padding="5dp"
         android:layout_height="wrap_content">
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="match_parent"
+            android:id="@+id/imgThumbnail"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/music"/>
         <LinearLayout
