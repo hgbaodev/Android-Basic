@@ -30,6 +30,7 @@
         android:textStyle="italic"
         android:layout_marginBottom="71dp"
         android:textSize="13dp"/>
+    
     <RelativeLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
@@ -64,48 +65,41 @@
                 android:layout_marginTop="0dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="58dp">
+            android:layout_marginBottom="78dp">
 
             <SeekBar
                 android:id="@+id/seekbar_id"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginBottom="25dp"></SeekBar>
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
 
             <TextView
                 android:id="@+id/txtstart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="false"
-                android:layout_centerInParent="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@+id/seekbar_id"
+                app:layout_constraintLeft_toLeftOf="@id/seekbar_id"
+                app:layout_constraintTop_toBottomOf="@id/seekbar_id"
+                android:layout_marginLeft="14dp"
                 android:text="00:00"
                 android:textColor="#FFF"
-                android:textSize="14sp" />
-
+                android:textSize="13sp" />
             <TextView
                 android:id="@+id/txtstop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="false"
-                android:layout_centerInParent="true"
-                android:layout_marginRight="20dp"
-                android:layout_toRightOf="@+id/seekbar_id"
+                app:layout_constraintRight_toRightOf="@id/seekbar_id"
+                app:layout_constraintTop_toBottomOf="@id/seekbar_id"
+                android:layout_marginRight="14dp"
                 android:text="00:00"
                 android:textColor="#FFF"
-                android:textSize="14sp" />
-        </RelativeLayout>
+                android:textSize="13sp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
             android:id="@+id/btnPlayMusicCenter"

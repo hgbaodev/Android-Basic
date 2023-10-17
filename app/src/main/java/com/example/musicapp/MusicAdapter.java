@@ -65,7 +65,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         }
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView lblName;
         TextView lblPath;
@@ -284,7 +283,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Audio audio = listAudio.get(position);
-        holder.lblName.setText(audio.getName());
+        holder.lblName.setText(audio.getName().split("-")[0]);
         holder.lblPath.setText(audio.getSinger());
 
         Bitmap thumbnail = getThumbnail(audio.getPath());
@@ -308,7 +307,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         Audio audio = listAudio.get(position);
         musicName.setText(audio.getName());
         singerName.setText(audio.getSinger());
-
+        Bitmap thumbnail = getThumbnail(audio.getPath());
+        if(thumbnail != null) circleImageView.setImageBitmap(thumbnail);
+        else circleImageView.setImageResource(R.drawable.mycd);
         try {
             MusicAdapter.mediaPlayer.setDataSource(audio.getPath());
             MusicAdapter.mediaPlayer.prepare();
@@ -318,11 +319,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     }
 
     public static Bitmap getThumbnail(String path) {
-        MediaMetadataRetriever mr = new MediaMetadataRetriever();
-        mr.setDataSource(path);
-        byte[] byte1 = mr.getEmbeddedPicture();
+        MediaMetadataRetriever m = new MediaMetadataRetriever();
+        m.setDataSource(path);
+        byte[] byte1 = m.getEmbeddedPicture();
         try {
-            mr.release();
+            m.release();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -19,11 +19,12 @@
         android:padding="10dp"
         android:orientation="horizontal"
         >
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/cd_image"
-            android:layout_marginTop="12dp"
             android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_height="31dp"
+            android:layout_marginTop="12dp"
             android:src="@drawable/mycd"
             app:civ_border_color="#F6F2F2"
             app:civ_border_width="2dp" />
