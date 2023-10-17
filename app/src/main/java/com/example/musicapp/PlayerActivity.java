@@ -3,6 +3,7 @@ package com.example.musicapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -63,7 +64,25 @@ public class PlayerActivity extends AppCompatActivity {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 // Xử lý khi bài hát kết thúc
+                RecyclerView.ViewHolder viewHolder = MusicAdapter.recyclerView.findViewHolderForAdapterPosition(position);
+                if (viewHolder instanceof MusicAdapter.ViewHolder) {
+                    MusicAdapter.ViewHolder yourViewHolder = (MusicAdapter.ViewHolder) viewHolder;
+                    yourViewHolder.btnPlay.setImageResource(R.drawable.play);
+                }
                 playNextSong();
+                MusicAdapter.positionPlaying = position;
+                MusicAdapter.musicName.setText(MusicAdapter.listAudio.get(position).getName());
+                MusicAdapter.singerName.setText(MusicAdapter.listAudio.get(position).getSinger());
+
+                Bitmap thumbnail = MusicAdapter.getThumbnail(MusicAdapter.listAudio.get(position).getPath());
+                if(thumbnail != null) MusicAdapter.circleImageView.setImageBitmap(thumbnail);
+                else MusicAdapter.circleImageView.setImageResource(R.drawable.mycd);
+
+                viewHolder = MusicAdapter.recyclerView.findViewHolderForAdapterPosition(position);
+                if (viewHolder instanceof MusicAdapter.ViewHolder) {
+                    MusicAdapter.ViewHolder yourViewHolder = (MusicAdapter.ViewHolder) viewHolder;
+                    yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
+                }
             }
         });
         btnPlayMusicCenter.setOnClickListener(new View.OnClickListener() {
