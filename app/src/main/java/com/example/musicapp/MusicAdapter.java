@@ -29,7 +29,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     private Context mContext;
     static MediaPlayer mediaPlayer;
     private RecyclerView recyclerView;
-    private static int positionPlaying = -1;
+    private static int positionPlaying = 0;
     private TextView musicName;
     private TextView singerName;
     private ImageButton playAndPauseBtn, preBtn, nextBtn;

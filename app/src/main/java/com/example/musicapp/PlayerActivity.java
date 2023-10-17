@@ -35,7 +35,6 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PlayerActivity extends AppCompatActivity {
-    // lưu trữ vị trí khi chuyển sang activity này để xử lý trạng thái lúc quay về
     private int storePosition = -1;
 
     private Audio audio;
@@ -71,6 +70,13 @@ public class PlayerActivity extends AppCompatActivity {
         initViews();
         loadMusic();
         MusicAdapter.mediaPlayer.seekTo(currentTime);
+        MusicAdapter.mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                // Xử lý khi bài hát kết thúc
+                playNextSong();
+            }
+        });
         btnPlayMusicCenter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,6 +123,8 @@ public class PlayerActivity extends AppCompatActivity {
         if(MusicAdapter.mediaPlayer.isPlaying()){
             MusicAdapter.mediaPlayer.stop();
         }
+        if(position >= MusicAdapter.listAudio.size()) position = 0;
+        if(position <0) position = MusicAdapter.listAudio.size()-1;
         MusicAdapter.mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(MusicAdapter.listAudio.get(position).getPath())));
         musicName.setText(MusicAdapter.listAudio.get(position).getName().split("-")[0]);
         singerName.setText(MusicAdapter.listAudio.get(position).getSinger());
@@ -189,6 +197,16 @@ public class PlayerActivity extends AppCompatActivity {
         btnNext = findViewById(R.id.btnNext);
         seekmusic = (SeekBar) findViewById(R.id.seekbar_id);
         circleImageView = findViewById(R.id.cd_image);
+    }
+
+    private void playNextSong() {
+        position++;
+        if (position >= MusicAdapter.listAudio.size()) {
+            position = 0;
+        }
+        loadMusic();
+        btnPlayMusicCenter.setImageResource(R.drawable.newpause);
+        startRotateAnimation();
     }
 
     @Override
