@@ -43,7 +43,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private TextView musicName, txtstart, txtstop, singerName;
 
-    private ImageButton btnPre, btnPlayMusicCenter, btnNext;
+    private ImageButton btnPre, btnPlayMusicCenter, btnNext, btnBasePre, btnBaseNext;
 
     private CircleImageView circleImageView;
 
@@ -115,6 +115,24 @@ public class PlayerActivity extends AppCompatActivity {
                 loadMusic();
                 btnPlayMusicCenter.setImageResource(R.drawable.newpause);
                 startRotateAnimation();
+            }
+        });
+
+        btnBasePre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentT = MusicAdapter.mediaPlayer.getCurrentPosition()-10000;
+                if(currentT < 0) currentT = 0;
+                MusicAdapter.mediaPlayer.seekTo(currentT);
+            }
+        });
+
+        btnBaseNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int currentT = MusicAdapter.mediaPlayer.getCurrentPosition()+10000;
+                if(currentT > MusicAdapter.mediaPlayer.getDuration()) currentT = MusicAdapter.mediaPlayer.getDuration();
+                MusicAdapter.mediaPlayer.seekTo(currentT);
             }
         });
     }
@@ -193,6 +211,8 @@ public class PlayerActivity extends AppCompatActivity {
         txtstart = findViewById(R.id.txtstart);
         txtstop = findViewById(R.id.txtstop);
         btnPre = findViewById(R.id.btnPre);
+        btnBasePre = findViewById(R.id.btnBasePre);
+        btnBaseNext = findViewById(R.id.btnBaseNext);
         btnPlayMusicCenter = findViewById(R.id.btnPlayMusicCenter);
         btnNext = findViewById(R.id.btnNext);
         seekmusic = (SeekBar) findViewById(R.id.seekbar_id);
