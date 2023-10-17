@@ -18,10 +18,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -107,11 +103,11 @@ public class MainActivity extends AppCompatActivity {
             if (playValue) {
                 playAndPauseBtn.setImageResource(R.drawable.newpause);
                 yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
-                startRotateAnimation();
+                RotateAnimation.start(circleImageView);
             } else {
                 playAndPauseBtn.setImageResource(R.drawable.newplay);
                 yourViewHolder.btnPlay.setImageResource(R.drawable.play);
-                stopRotateAnimation();
+                RotateAnimation.stop(circleImageView);
             }
         }
     }
@@ -170,26 +166,11 @@ public class MainActivity extends AppCompatActivity {
                     audioModel.setAlbum(album);
                     audioModel.setSinger(artist);
                     audioModel.setPath(path);
-                    Log.i("MUSIC", audioModel.toString());
                     tempAudioList.add(audioModel);
                 }
             }
             c.close();
         }
-
         return tempAudioList;
-    }
-    public void startRotateAnimation(){
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f, // Xoay xung quanh trục X ở giữa view
-                Animation.RELATIVE_TO_SELF, 0.5f); // Xoay xung quanh trục Y ở giữa view
-        rotateAnimation.setDuration(1000); // Thời gian một vòng xoay (milliseconds)
-        rotateAnimation.setRepeatCount(Animation.INFINITE); // Lặp vô hạn
-        rotateAnimation.setInterpolator(new LinearInterpolator()); // Chuyển động đều
-        circleImageView.startAnimation(rotateAnimation);
-    }
-
-    public void stopRotateAnimation(){
-        circleImageView.clearAnimation();
     }
 }
