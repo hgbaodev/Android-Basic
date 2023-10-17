@@ -3,36 +3,23 @@ package com.example.musicapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.chibde.visualizer.CircleBarVisualizer;
-import com.chibde.visualizer.LineVisualizer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -85,11 +72,11 @@ public class PlayerActivity extends AppCompatActivity {
                 if(MusicAdapter.mediaPlayer.isPlaying()){
                     MusicAdapter.mediaPlayer.pause();
                     btnPlayMusicCenter.setImageResource(R.drawable.newplay);
-                    MusicAdapter.stopRotateAnimation(circleImageView);
+                    RotateAnimation.stop(circleImageView);
                 }else{
                     MusicAdapter.mediaPlayer.start();
                     btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-                    MusicAdapter.startRotateAnimation(circleImageView);
+                    RotateAnimation.start(circleImageView);
                 }
             }
         });
@@ -103,7 +90,7 @@ public class PlayerActivity extends AppCompatActivity {
                 }
                 loadMusic();
                 btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-                MusicAdapter.startRotateAnimation(circleImageView);
+                RotateAnimation.start(circleImageView);
             }
         });
         btnPre.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +103,7 @@ public class PlayerActivity extends AppCompatActivity {
                 }
                 loadMusic();
                 btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-                MusicAdapter.startRotateAnimation(circleImageView);
+                RotateAnimation.start(circleImageView);
             }
         });
 
@@ -148,20 +135,13 @@ public class PlayerActivity extends AppCompatActivity {
         MusicAdapter.mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(MusicAdapter.listAudio.get(position).getPath())));
         musicName.setText(MusicAdapter.listAudio.get(position).getName().split("-")[0]);
         singerName.setText(MusicAdapter.listAudio.get(position).getSinger());
-        try {
-            Bitmap thumbnail = MusicAdapter.getThumbnail(MusicAdapter.listAudio.get(position).getPath());
-            if(thumbnail != null) {
-                circleImageView.setImageBitmap(thumbnail);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Bitmap thumbnail = MusicAdapter.getThumbnail(MusicAdapter.listAudio.get(position).getPath());
+        if(thumbnail != null) circleImageView.setImageBitmap(thumbnail);
         MusicAdapter.mediaPlayer.start();
-
         seekmusic.setMax(MusicAdapter.mediaPlayer.getDuration());
 
-        updateseekbar = new Thread() {
-            @Override
+            updateseekbar = new Thread() {
+                @Override
             public void run() {
                 int totalDuration = MusicAdapter.mediaPlayer.getDuration();
                 int currentposition = 0;
@@ -208,7 +188,7 @@ public class PlayerActivity extends AppCompatActivity {
                 handler.postDelayed(this, delay);
             }
         }, delay);
-        MusicAdapter.startRotateAnimation(circleImageView);
+        RotateAnimation.start(circleImageView);
 
         CircleBarVisualizer circleBarVisualizer = findViewById(R.id.visualizer);
         circleBarVisualizer.setColor(ContextCompat.getColor(this, R.color.purple_200));
@@ -236,7 +216,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
         loadMusic();
         btnPlayMusicCenter.setImageResource(R.drawable.newpause);
-        MusicAdapter.startRotateAnimation(circleImageView);
+        RotateAnimation.start(circleImageView);
     }
 
     @Override

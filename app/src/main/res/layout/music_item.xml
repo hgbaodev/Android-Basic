@@ -50,15 +50,15 @@
             android:layout_height="match_parent">
             <ImageButton
                 android:id="@+id/btnPlay"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:background="@color/cardview_dark_background"
                 android:layout_marginBottom="5dp"
                 android:src="@drawable/play"/>
             <ImageButton
                 android:id="@+id/btnStop"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:background="@color/cardview_dark_background"
                 android:src="@drawable/square"/>
         </LinearLayout>

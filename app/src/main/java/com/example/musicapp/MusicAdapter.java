@@ -1,19 +1,14 @@
 package com.example.musicapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,8 +26,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     static MediaPlayer mediaPlayer;
     private RecyclerView recyclerView;
     private static int positionPlaying = 0;
-    private TextView musicName;
-    private TextView singerName;
+    private TextView musicName, singerName;
     private ImageButton playAndPauseBtn, preBtn, nextBtn;
     private CircleImageView circleImageView;
     private boolean initialPlayState;
@@ -41,7 +35,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     public void setPositionPlaying(int pos){
         this.positionPlaying = pos;
     }
-
 
     public RecyclerView getRecyclerView(){
         return this.recyclerView;
@@ -63,14 +56,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         initialPlayState = play; // Lưu trạng thái ban đầu
 
         loadView(position);
-
+        
         if (initialPlayState) {
             positionPlaying = position;
-            playAndPauseBtn.setImageResource(R.drawable.newpause);
-            startRotateAnimation(circleImageView);
+            renderStartBottomBar();
         } else {
-            stopRotateAnimation(circleImageView);
-            playAndPauseBtn.setImageResource(R.drawable.newplay);
+            renderPauseBottomBar();
         }
     }
 
@@ -88,27 +79,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Audio audio = listAudio.get(getAdapterPosition());
-                    musicName.setText(audio.getName());
-                    singerName.setText(audio.getSinger());
-                    try {
-                        Bitmap thumbnail = getThumbnail(audio.getPath());
-                        if(thumbnail != null) {
-                            circleImageView.setImageBitmap(thumbnail);
-                        } else {
-                            circleImageView.setImageResource(R.drawable.mycd);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    playAndPauseBtn.setImageResource(R.drawable.newpause);
-                    startRotateAnimation(circleImageView);
+
                     playAudioHandler();
+
                     Intent intent = new Intent(mContext, PlayerActivity.class);
                     intent.putExtra("position", getAdapterPosition());
                     intent.putExtra("currentTime", MusicAdapter.mediaPlayer.getCurrentPosition());
                     MainActivity.playerActivityLauncher.launch(intent);
-
                 }
             });
             smallControlLayout.setOnClickListener(new View.OnClickListener() {
@@ -123,24 +100,19 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             playAndPauseBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
+                    ViewHolder yourViewHolder = (ViewHolder) viewHolder;
+
                     if(MusicAdapter.mediaPlayer.isPlaying()){
                         MusicAdapter.mediaPlayer.pause();
-                        playAndPauseBtn.setImageResource(R.drawable.newplay);
-                        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
-                        if (viewHolder instanceof ViewHolder) {
-                            ViewHolder yourViewHolder = (ViewHolder) viewHolder;
-                            yourViewHolder.btnPlay.setImageResource(R.drawable.play);
-                        }
-                        stopRotateAnimation(circleImageView);
-                    }else{
+                        yourViewHolder.btnPlay.setImageResource(R.drawable.play);
+
+                        renderPauseBottomBar();
+                    } else {
                         MusicAdapter.mediaPlayer.start();
-                        playAndPauseBtn.setImageResource(R.drawable.newpause);
-                        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
-                        if (viewHolder instanceof ViewHolder) {
-                            ViewHolder yourViewHolder = (ViewHolder) viewHolder;
-                            yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
-                        }
-                        startRotateAnimation(circleImageView);
+                        yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
+
+                        renderStartBottomBar();
                     }
 
                 }
@@ -150,12 +122,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 public void onClick(View view) {
                     int temp = positionPlaying;
                     positionPlaying++;
-                    if(positionPlaying>= listAudio.size()){
+                    if(positionPlaying >= listAudio.size()){
                         positionPlaying = 0;
                     }
                     nextAndPreAudioHandler(temp, positionPlaying);
-                    playAndPauseBtn.setImageResource(R.drawable.newpause);
-                    startRotateAnimation(circleImageView);
+
+                    renderStartBottomBar();
                 }
             });
             preBtn.setOnClickListener(new View.OnClickListener() {
@@ -167,15 +139,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                         positionPlaying = listAudio.size() - 1;
                     }
                     nextAndPreAudioHandler(temp, positionPlaying);
-                    playAndPauseBtn.setImageResource(R.drawable.newpause);
-                    startRotateAnimation(circleImageView);
+
+                    renderStartBottomBar();
 
                 }
             });
 
             // end
             btnPlay.setOnClickListener(view -> {
-
                 playAudioHandler();
             });
 
@@ -183,6 +154,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 stopAudioHandler();
             });
         }
+
 
         public void nextAndPreAudioHandler(int beforePositon, int afterPosition){
             RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(beforePositon);
@@ -198,21 +170,19 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             if(MusicAdapter.mediaPlayer.isPlaying()){
                 MusicAdapter.mediaPlayer.stop();
             }
-            MusicAdapter.mediaPlayer.reset();
-            try {
-                MusicAdapter.mediaPlayer.setDataSource(listAudio.get(positionPlaying).getPath());
-                MusicAdapter.mediaPlayer.prepare();
-                MusicAdapter.mediaPlayer.start();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            musicName.setText(listAudio.get(positionPlaying).getName());
-            singerName.setText(listAudio.get(positionPlaying).getSinger());
+
+            Audio audio = listAudio.get(positionPlaying);
+            startMusic(audio.getPath());
+            musicName.setText(audio.getName());
+            singerName.setText(audio.getSinger());
+            Bitmap thumbnail = getThumbnail(audio.getPath());
+            if(thumbnail != null) circleImageView.setImageBitmap(thumbnail);
+            else circleImageView.setImageResource(R.drawable.mycd);
         }
+
         public void playAudioHandler(){
             int position = getAdapterPosition();
-            musicName.setText(listAudio.get(getAdapterPosition()).getName());
-            singerName.setText(listAudio.get(getAdapterPosition()).getSinger());
+            // Nếu nhạc khác nhạc hiện tại thì bật bài mới
             if(position != positionPlaying) {
                 RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(positionPlaying);
                 if (viewHolder instanceof ViewHolder) {
@@ -222,54 +192,61 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 }
                 positionPlaying = position;
                 MusicAdapter.mediaPlayer.stop();
-                MusicAdapter.mediaPlayer.reset();
-                Audio audio = listAudio.get(position);
-                try {
-                    btnPlay.setImageResource(R.drawable.pause);
-                    playAndPauseBtn.setImageResource(R.drawable.newpause);
-                    startRotateAnimation(circleImageView);
-                    MusicAdapter.mediaPlayer.reset();
-                    MusicAdapter.mediaPlayer.setDataSource(audio.getPath());
-                    MusicAdapter.mediaPlayer.prepare();
-                    MusicAdapter.mediaPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                renderStartMusic(listAudio.get(getAdapterPosition()));
+                startMusic(listAudio.get(position).getPath());
             } else {
+                // Nếu đang là bài nhạc đang bật
                 Audio audio = listAudio.get(position);
-                try {
-                    if (MusicAdapter.mediaPlayer.isPlaying()) {
-                        btnPlay.setImageResource(R.drawable.play);
-                        playAndPauseBtn.setImageResource(R.drawable.newplay);
-                        stopRotateAnimation(circleImageView);
-                        MusicAdapter.mediaPlayer.pause();
-                    } else if (MusicAdapter.mediaPlayer.getCurrentPosition() > 0) {
-                        btnPlay.setImageResource(R.drawable.pause);
-                        playAndPauseBtn.setImageResource(R.drawable.newpause);
-                        startRotateAnimation(circleImageView);
-                        MusicAdapter.mediaPlayer.start();
-                    } else {
-                        positionPlaying = position;
-                        btnPlay.setImageResource(R.drawable.pause);
-                        playAndPauseBtn.setImageResource(R.drawable.newpause);
-                        startRotateAnimation(circleImageView);
-                        MusicAdapter.mediaPlayer.reset();
-                        MusicAdapter.mediaPlayer.setDataSource(audio.getPath());
-                        MusicAdapter.mediaPlayer.prepare();
-                        MusicAdapter.mediaPlayer.start();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (MusicAdapter.mediaPlayer.isPlaying()) {
+                    renderPauseMusic();
+                    MusicAdapter.mediaPlayer.pause();
+                } else if (MusicAdapter.mediaPlayer.getCurrentPosition() > 0) {
+                    // Nếu đang pause thì phát tiếp tục
+                    renderStartMusic(audio);
+                    MusicAdapter.mediaPlayer.start();
+                } else {
+                    // Nếu chưa phát thì phát từ đầu
+                    positionPlaying = position;
+                    renderStartMusic(audio);
+                    startMusic(audio.getPath());
                 }
             }
         }
+
+        public void renderStartMusic(Audio audio) {
+            // Set Bottom Bar
+            musicName.setText(audio.getName());
+            singerName.setText(audio.getSinger());
+            Bitmap thumbnail = getThumbnail(audio.getPath());
+            if(thumbnail != null) circleImageView.setImageBitmap(thumbnail);
+            else circleImageView.setImageResource(R.drawable.mycd);
+
+            renderStartBottomBar();
+            //
+            btnPlay.setImageResource(R.drawable.pause);
+        }
+
+        public void renderPauseMusic() {
+            btnPlay.setImageResource(R.drawable.play);
+            renderPauseBottomBar();
+        }
+
+        public void startMusic(String path) {
+            try {
+                MusicAdapter.mediaPlayer.reset();
+                MusicAdapter.mediaPlayer.setDataSource(path);
+                MusicAdapter.mediaPlayer.prepare();
+                MusicAdapter.mediaPlayer.start();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         public void stopAudioHandler(){
             int position = getAdapterPosition();
             if(position == positionPlaying && MusicAdapter.mediaPlayer.isPlaying()) {
                 positionPlaying = -1;
-                btnPlay.setImageResource(R.drawable.play);
-                playAndPauseBtn.setImageResource(R.drawable.newplay);
-                stopRotateAnimation(circleImageView);
+                renderPauseMusic();
                 MusicAdapter.mediaPlayer.stop();
                 MusicAdapter.mediaPlayer.reset();
             }
@@ -282,6 +259,17 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             btnStop = itemView.findViewById(R.id.btnStop);
             imgThumbnail = itemView.findViewById(R.id.imgThumbnail);
         }
+    }
+
+
+    public void renderStartBottomBar() {
+        playAndPauseBtn.setImageResource(R.drawable.newpause);
+        RotateAnimation.start(circleImageView);
+    }
+
+    public void renderPauseBottomBar() {
+        playAndPauseBtn.setImageResource(R.drawable.newplay);
+        RotateAnimation.stop(circleImageView);
     }
 
     @NonNull
@@ -299,16 +287,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         holder.lblName.setText(audio.getName());
         holder.lblPath.setText(audio.getSinger());
 
-        try {
-            Bitmap thumbnail = getThumbnail(audio.getPath());
-            if(thumbnail != null) {
-                holder.imgThumbnail.setImageBitmap(thumbnail);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
+        Bitmap thumbnail = getThumbnail(audio.getPath());
+        if(thumbnail != null) holder.imgThumbnail.setImageBitmap(thumbnail);
 
         if (initialPlayState) {
             if (position == positionPlaying) {
@@ -324,41 +304,28 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         return listAudio.size();
     }
 
-    public void releaseMediaPlayer() {
-        if (MusicAdapter.mediaPlayer != null) {
-            MusicAdapter.mediaPlayer.release();
-            MusicAdapter.mediaPlayer = null;
-        }
-    }
-    public static void startRotateAnimation(CircleImageView img){
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360,
-                Animation.RELATIVE_TO_SELF, 0.5f, // Xoay xung quanh trục X ở giữa view
-                Animation.RELATIVE_TO_SELF, 0.5f); // Xoay xung quanh trục Y ở giữa view
-        rotateAnimation.setDuration(20000); // Thời gian một vòng xoay (milliseconds)
-        rotateAnimation.setRepeatCount(Animation.INFINITE); // Lặp vô hạn
-        rotateAnimation.setInterpolator(new LinearInterpolator()); // Chuyển động đều
-        img.startAnimation(rotateAnimation);
-    }
-    public static void stopRotateAnimation(CircleImageView img){
-        img.clearAnimation();
-    }
     public void loadView(int position){
-        musicName.setText(listAudio.get(position).getName());
-        singerName.setText(listAudio.get(position).getSinger());
-        playAndPauseBtn.setImageResource(R.drawable.newplay);
+        Audio audio = listAudio.get(position);
+        musicName.setText(audio.getName());
+        singerName.setText(audio.getSinger());
+
         try {
-            MusicAdapter.mediaPlayer.setDataSource(listAudio.get(0).getPath());
+            MusicAdapter.mediaPlayer.setDataSource(audio.getPath());
             MusicAdapter.mediaPlayer.prepare();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Bitmap getThumbnail(String path) throws IOException {
+    public static Bitmap getThumbnail(String path) {
         MediaMetadataRetriever mr = new MediaMetadataRetriever();
         mr.setDataSource(path);
         byte[] byte1 = mr.getEmbeddedPicture();
-        mr.release();
+        try {
+            mr.release();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         if(byte1 != null) {
             return BitmapFactory.decodeByteArray(byte1, 0, byte1.length);
         }
