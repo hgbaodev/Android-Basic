@@ -42,57 +42,73 @@ public class MainActivity extends AppCompatActivity {
     public CircleImageView circleImageView;
     public static ActivityResultLauncher<Intent> playerActivityLauncher;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initViews();
         checkPermission();
+        setupRecyclerView();
+        setupPlayerActivityLauncher();
+    }
 
+    private void setupRecyclerView() {
         listAudio = getAllAudioFromDevice(getApplicationContext());
-        adapter = new MusicAdapter(listAudio, getApplicationContext(), listMusic, musicName, singerName, playAndPauseBtn, preBtn, nextBtn, circleImageView, smallControlLayout , 0, false );
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+        adapter = new MusicAdapter(listAudio, getApplicationContext(), listMusic, musicName, singerName, playAndPauseBtn, preBtn, nextBtn, circleImageView, smallControlLayout, 0, false);
         listMusic.setAdapter(adapter);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         listMusic.setLayoutManager(linearLayoutManager);
+    }
+
+    private void setupPlayerActivityLauncher() {
         playerActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        // Xử lý kết quả từ PlayerActivity ở đây
-                        if (result.getData() != null) {
-                            int returnedValue = result.getData().getIntExtra("position", -1);
-
-                            int storePosition = result.getData().getIntExtra("storePosition", -1);
-                            // set lại vị  trí
-                            adapter.setPositionPlaying(returnedValue);
-                            Boolean playValue = result.getData().getBooleanExtra("play", false);
-                            String returnedMusicName = result.getData().getStringExtra("musicname");
-                            this.musicName.setText(returnedMusicName);
-                            // xử lý vị trí audio cũ
-                            RecyclerView.ViewHolder viewHolder = adapter.getRecyclerView().findViewHolderForAdapterPosition(storePosition);
-                            if (viewHolder instanceof MusicAdapter.ViewHolder) {
-                                MusicAdapter.ViewHolder yourViewHolder = (MusicAdapter.ViewHolder) viewHolder;
-                                yourViewHolder.btnPlay.setImageResource(R.drawable.play);
-                            }
-                            viewHolder = adapter.getRecyclerView().findViewHolderForAdapterPosition(returnedValue);
-                            if (viewHolder instanceof MusicAdapter.ViewHolder) {
-                                MusicAdapter.ViewHolder yourViewHolder = (MusicAdapter.ViewHolder) viewHolder;
-
-                                if(playValue){
-                                    playAndPauseBtn.setImageResource(R.drawable.newpause);
-                                    yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
-                                    startRotateAnimation();
-                                }else{
-                                    playAndPauseBtn.setImageResource(R.drawable.newplay);
-                                    yourViewHolder.btnPlay.setImageResource(R.drawable.play);
-                                    stopRotateAnimation();
-                                }
-                            }
-
-                        }
+                        handlePlayerActivityResult(result.getData());
                     }
                 });
     }
+
+    private void handlePlayerActivityResult(Intent data) {
+        if (data != null) {
+            int returnedValue = data.getIntExtra("position", -1);
+            int storePosition = data.getIntExtra("storePosition", -1);
+            adapter.setPositionPlaying(returnedValue);
+            boolean playValue = data.getBooleanExtra("play", false);
+            String returnedMusicName = data.getStringExtra("musicname");
+            musicName.setText(returnedMusicName);
+            handlePreviousItem(storePosition);
+            handleCurrentItem(returnedValue, playValue);
+        }
+    }
+
+    private void handlePreviousItem(int storePosition) {
+        RecyclerView.ViewHolder viewHolder = adapter.getRecyclerView().findViewHolderForAdapterPosition(storePosition);
+        if (viewHolder instanceof MusicAdapter.ViewHolder) {
+            MusicAdapter.ViewHolder yourViewHolder = (MusicAdapter.ViewHolder) viewHolder;
+            yourViewHolder.btnPlay.setImageResource(R.drawable.play);
+        }
+    }
+
+    private void handleCurrentItem(int returnedValue, boolean playValue) {
+        RecyclerView.ViewHolder viewHolder = adapter.getRecyclerView().findViewHolderForAdapterPosition(returnedValue);
+        if (viewHolder instanceof MusicAdapter.ViewHolder) {
+            MusicAdapter.ViewHolder yourViewHolder = (MusicAdapter.ViewHolder) viewHolder;
+
+            if (playValue) {
+                playAndPauseBtn.setImageResource(R.drawable.newpause);
+                yourViewHolder.btnPlay.setImageResource(R.drawable.pause);
+                startRotateAnimation();
+            } else {
+                playAndPauseBtn.setImageResource(R.drawable.newplay);
+                yourViewHolder.btnPlay.setImageResource(R.drawable.play);
+                stopRotateAnimation();
+            }
+        }
+    }
+
 
     public void initViews() {
         listMusic = findViewById(R.id.listMusic);
@@ -105,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         smallControlLayout = findViewById(R.id.main);
 
     }
-
 
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
