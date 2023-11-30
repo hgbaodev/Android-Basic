@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     public ImageButton playAndPauseBtn, preBtn, nextBtn;
     public CircleImageView circleImageView;
     public static ActivityResultLauncher<Intent> playerActivityLauncher;
+    public static ActivityResultLauncher<Intent> homeActivityLauncher;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +52,26 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         checkPermission();
-        setupRecyclerView();
+//        setupRecyclerView();
+        Intent intent = getIntent();
+
+        if (intent.hasExtra("pathFolder")) {
+            String pathFolder = intent.getStringExtra("pathFolder");
+            List<Audio> audioList = getAllAudioFromFolder(this, pathFolder);
+            if (!audioList.isEmpty()) {
+                // Tạo adapter và đặt nó cho RecyclerView
+                adapter = new MusicAdapter(audioList, getApplicationContext(), listMusic, musicName, singerName, playAndPauseBtn, preBtn, nextBtn, circleImageView, smallControlLayout, 0, false);
+                listMusic.setAdapter(adapter);
+
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
+                listMusic.setLayoutManager(linearLayoutManager);
+            } else {
+                Toast.makeText(this, "Không có file nhạc trong thư mục", Toast.LENGTH_SHORT);
+            }
+        }
         setupPlayerActivityLauncher();
+
+
     }
 
     private void setupRecyclerView() {
@@ -122,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         nextBtn = findViewById(R.id.btnNext);
         circleImageView = findViewById(R.id.cd_image);
         smallControlLayout = findViewById(R.id.main);
-
     }
 
     private void checkPermission() {
@@ -173,4 +197,48 @@ public class MainActivity extends AppCompatActivity {
         }
         return tempAudioList;
     }
+
+    public List<Audio> getAllAudioFromFolder(final Context context, String folderPath) {
+        List<Audio> tempAudioList = new ArrayList<>();
+
+        // Xác định URI của thư mục cụ thể
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.ArtistColumns.ARTIST
+        };
+
+        // Xây dựng điều kiện WHERE để lấy các bản ghi chỉ từ thư mục cụ thể
+        String selection = MediaStore.Audio.Media.DATA + " LIKE ?";
+        String[] selectionArgs = new String[]{"%" + folderPath + "%"};
+
+        Cursor c = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+
+        if (c != null) {
+            while (c.moveToNext()) {
+                Audio audioModel = new Audio();
+                String path = c.getString(0);
+                String album = c.getString(1);
+                String artist = c.getString(2);
+                String name = path.substring(path.lastIndexOf("/") + 1);
+
+                // Kiểm tra xem file có phải là file nhạc không
+                if (path != null && path.toLowerCase().endsWith(".mp3")) {
+                    audioModel.setName(name);
+                    audioModel.setAlbum(album);
+                    audioModel.setSinger(artist);
+                    audioModel.setPath(path);
+                    tempAudioList.add(audioModel);
+                }
+            }
+            c.close();
+        } else {
+            Log.e("AudioLoader", "Cursor is null");
+        }
+        Log.d("AudioLoader", "Number of records: " + tempAudioList.size());
+        return tempAudioList;
+    }
+
+
 }

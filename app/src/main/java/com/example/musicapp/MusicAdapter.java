@@ -290,7 +290,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         Bitmap thumbnail = getThumbnail(audio.getPath());
         if(thumbnail != null) holder.imgThumbnail.setImageBitmap(thumbnail);
-
+        else holder.imgThumbnail.setImageResource(R.drawable.file_mucic);
         if (initialPlayState) {
             if (position == positionPlaying) {
                 holder.btnPlay.setImageResource(R.drawable.pause);
@@ -311,7 +311,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         singerName.setText(audio.getSinger());
         Bitmap thumbnail = getThumbnail(audio.getPath());
         if(thumbnail != null) circleImageView.setImageBitmap(thumbnail);
-        else circleImageView.setImageResource(R.drawable.mycd);
+        else circleImageView.setImageResource(R.drawable.file_mucic);
         try {
             MusicAdapter.mediaPlayer.setDataSource(audio.getPath());
             MusicAdapter.mediaPlayer.prepare();
