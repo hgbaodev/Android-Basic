@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SaveImageActivity"
+    android:background="@color/white">
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="Image Saved"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:background="@color/primary_color"
+        android:gravity="center"
+        ></TextView>
+    <ImageView
+        android:id="@+id/imageSaved"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@+id/header"
+        android:background="@drawable/image_custom"
+        android:layout_margin="12dp"
+        android:scaleType="centerCrop"
+
+        ></ImageView>
+    <Button
+        android:id="@+id/backtohome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/primary_color"
+        android:text="Back to home"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        ></Button>
+
+</RelativeLayout>

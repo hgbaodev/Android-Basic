@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background_color">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/ic_pdf" />
+
+    <!--    <TextView-->
+<!--        android:id="@+id/file_path"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/file_name"-->
+<!--        android:layout_marginEnd="11dp"-->
+<!--        android:layout_toStartOf="@+id/share"-->
+<!--        android:layout_toEndOf="@id/imageView"-->
+<!--        android:fontFamily="@font/poppins"-->
+<!--        android:text="/storage/0/sample/filepath.pdf"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="12sp" />-->
+
+
+    <TextView
+        android:id="@+id/file_name"
+        android:layout_width="231dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="52dp"
+        android:layout_toStartOf="@+id/share"
+        android:layout_toEndOf="@+id/imageView"
+        android:ellipsize="marquee"
+        android:fontFamily="@font/poppins_semibold"
+        android:lines="2"
+        android:text="Pdf File Name"
+        android:textColor="@color/black"
+        android:textSize="13sp" />
+
+    <ImageView
+        android:id="@+id/share"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        app:srcCompat="@drawable/ic_share" />
+
+    <ImageView
+        android:id="@+id/delete"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="-1dp"
+        android:layout_toStartOf="@+id/share"
+        app:srcCompat="@drawable/baseline_delete_24" />
+
+</RelativeLayout>

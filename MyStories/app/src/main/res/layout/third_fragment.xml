@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ThirdFragment"
+    android:background="#34495e">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2c3e50"
+        android:text=" Setting"
+        android:textColor="#2ecc71"
+        android:textSize="24dp"
+        android:padding="4dp"
+        ></TextView>
+
+    <TextView
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thời gian thông báo"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        ></TextView>
+    <TextView
+        android:id="@+id/time"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:layout_centerHorizontal="true"
+        android:textColor="#2ecc71"
+        android:textSize="42dp"
+        ></TextView>
+    <Button
+        android:id="@+id/button"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/time"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thay đổi"
+        android:backgroundTint="#2ecc71"
+        android:textColor="@color/white"
+        ></Button>
+    <LinearLayout
+        android:layout_below="@+id/header"
+        android:layout_marginTop="120dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+    </LinearLayout>
+
+
+</RelativeLayout>

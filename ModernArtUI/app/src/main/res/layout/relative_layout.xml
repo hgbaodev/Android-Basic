@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/relative">
+
+        <TextView
+            android:id="@+id/lineHor"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/lineVer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="150dp"/>
+
+        <View
+            android:id="@+id/rect1"
+            android:layout_width="150dp"
+            android:layout_height="355dp"
+            android:layout_above="@+id/lineHor"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignEnd="@id/lineVer"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/design_default_color_primary" />
+
+        <View
+            android:id="@+id/rect2"
+            android:layout_width="152dp"
+            android:layout_height="269dp"
+            android:layout_below="@+id/rect1"
+            android:layout_alignParentBottom="true"
+            android:layout_alignEnd="@id/lineVer"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/design_default_color_secondary" />
+
+        <View
+            android:id="@+id/rect3"
+            android:layout_width="250dp"
+            android:layout_height="244dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_toEndOf="@+id/lineVer"
+            android:background="@color/design_default_color_secondary"
+            android:layout_margin="4dp"/>
+
+        <View
+            android:id="@+id/rect4"
+            android:layout_width="250dp"
+            android:layout_height="244dp"
+            android:layout_below="@+id/rect3"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_toEndOf="@+id/lineVer"
+            android:background="#fff00f" />
+
+        <View
+            android:id="@+id/rect5"
+            android:layout_width="250dp"
+            android:layout_height="244dp"
+            android:layout_below="@+id/rect4"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_toEndOf="@+id/lineVer"
+            android:background="#ff00ff" />
+
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

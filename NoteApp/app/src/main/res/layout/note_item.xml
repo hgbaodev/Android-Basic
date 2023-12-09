@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/color"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="#C30045" />
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="5dp"
+            android:text="Tiêu đề"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/contentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:padding="5dp"
+            android:text="Nội dung"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/dateText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
+            android:text="Ngày tạo"
+            android:textColor="@color/black"
+            android:drawableLeft="@drawable/ic_create"
+            android:drawablePadding="5dp"
+            android:textSize="14sp" />
+        <TextView
+            android:id="@+id/reminderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:padding="5dp"
+            android:text="Chỉnh sửa vào"
+            android:textColor="@color/black"
+            android:drawableLeft="@drawable/ic_noti"
+            android:drawablePadding="5dp"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
